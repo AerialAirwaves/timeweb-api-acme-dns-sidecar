@@ -20,9 +20,15 @@ class TimewebAPIService:
                 response.raise_for_status()
                 return await response.json()
 
-    async def create_acme_record(self, domain: str, acme_validation_token: str) -> int:
+    async def create_acme_record(self, domain: str, acme_validation_token: str, relative_subdomain: str = "") -> int:
+        acme_challenge_subdomain = "" if relative_subdomain == "" else f".{relative_subdomain}"
+
         request_url = f"{self.BASE_URL}/api/v1/domains/{domain}/dns-records"
-        request_body = {"subdomain": "_acme-challenge", "type": "TXT", "value": acme_validation_token}
+        request_body = {
+            "subdomain": f"_acme-challenge{acme_challenge_subdomain}",
+            "type": "TXT",
+            "value": acme_validation_token,
+        }
 
         async with aiohttp.ClientSession() as session:
             async with session.post(request_url, headers=self._headers, json=request_body) as response:
