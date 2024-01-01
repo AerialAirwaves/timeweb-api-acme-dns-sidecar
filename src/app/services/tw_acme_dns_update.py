@@ -26,8 +26,8 @@ class TimewebACMEDnsUpdateService(AcmeDnsUpdateService):
         if sub_parts[-1] == "":
             sub_parts.pop()
 
-        len_sub = len(sub_parts)
-        return len(root_parts) >= len_sub and root_parts[-len_sub:] == sub_parts
+        len_root = len(root_parts)
+        return len(root_parts) <= len(sub_parts) and sub_parts[-len_root:] == root_parts
 
     async def update(
         self, x_api_user: str, x_api_key: str, in_info: app.domain.acme_dns_update.AcmeDnsUpdateIn
